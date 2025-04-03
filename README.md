@@ -1,34 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# MCGoGo Enemy Predictor by Afidz
 
-## Getting Started
+MCGoGo Enemy Predictor adalah aplikasi berbasis Next.js yang dirancang untuk membantu memprediksi musuh pada game Magic Chess. Aplikasi ini menggunakan logika prediksi yang mengharuskan pengguna memasukkan beberapa input secara manual (misal: nama p8, input untuk ronde 2, 4, 5, dan 6) sehingga beberapa ronde dapat terprediksi secara otomatis. 
 
-First, run the development server:
+Aplikasi ini memiliki dua tabel:
+- **Tabel Ronde 1–7:** Tempat pengguna mengisi dan mendapatkan prediksi secara otomatis.
+- **Tabel Ronde 8–14:** Merupakan salinan (jiplakan) isian tabel ronde 1–7 dengan nomor ronde di-offset (8 = ronde 1, 9 = ronde 2, dst). Tabel ini hanya bersifat read-only dan dapat ditampilkan/disembunyikan menggunakan tombol toggle.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Preview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Lihat preview aplikasi di: [https://mcgogo.vercel.app/](https://mcgogo.vercel.app/)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Cara Kerja
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Global Input:**  
+  Masukkan nama **p8** (musuh pertama/mantan pertama) yang akan digunakan di ronde 1.
 
-## Learn More
+- **Tabel Ronde 1–7:**  
+  - **Ronde 1:** Otomatis diisi dengan *User vs = p8* dan *p8 vs = "user"*.
+  - **Ronde 2 & 4:** Diisi secara manual oleh pengguna.
+  - **Ronde 3:** Terprediksi dari ronde 2 (User vs = input p8 vs ronde 2, dan sebaliknya).
+  - **Ronde 5:** User vs terprediksi dari input p8 vs di ronde 4, sedangkan p8 vs harus diisi manual (dengan placeholder dinamis).
+  - **Ronde 6:** User vs terprediksi dari input p8 vs di ronde 5, sedangkan p8 vs harus diisi manual (misal: p6).
+  - **Ronde 7:** Terprediksi otomatis berdasarkan ronde 6.
 
-To learn more about Next.js, take a look at the following resources:
+- **Tabel Ronde 8–14:**  
+  Merupakan duplikasi (jiplakan) isian tabel ronde 1–7 dengan nomor ronde ditambahkan 7. Tabel ini hanya untuk tampilan (read-only).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Credits
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Dibuat dengan rumus dari YT Alphine dengan bantuan ChatGPT 03-mini-high
 
-## Deploy on Vercel
+## Cara Menjalankan
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Pastikan Anda sudah menginstall [Node.js](https://nodejs.org/) (versi 16) dan kemudian ikuti langkah berikut:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Clone repository ini:
+   ```bash
+   git clone https://github.com/username/mcgogo-enemy-predictor.git

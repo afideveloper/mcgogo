@@ -172,7 +172,14 @@ export default function Home() {
               <li>
                 Ronde 6: User vs = ronde 5 (p8Vs) → p8Vs diisi manual (misal: p6)
               </li>
-              <li>Ronde 7: User vs = ronde 6 (p8Vs) dan p8Vs = lawan user di ronde 6</li>
+              <li>
+                Ronde 7: User vs = ronde 6 (p8Vs) dan p8Vs = lawan user di ronde 6
+              </li>
+              <li>
+                <strong>Tabel tambahan:</strong> Tabel ronde 8–14 merupakan salinan
+                isian ronde 1–7 dengan nomor ronde di-offset (8 = ronde 1, 9 = ronde 2, dst). Tabel
+                ini hanya bersifat read-only.
+              </li>
             </ul>
           </div>
         )}
@@ -249,7 +256,7 @@ export default function Home() {
       {/* Garis pemisah */}
       <hr />
 
-      {/* Toggle untuk menampilkan tabel ronde 8-14 */}
+      {/* Toggle untuk menampilkan tabel Ronde 8-14 */}
       <div className="mb-3 text-center">
         <button
           className="btn btn-secondary"
@@ -259,7 +266,7 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Tabel Ronde 8-14 (hanya menampilkan isian saja, jiplakan data ronde 1-7 dengan nomor ronde di-offset) */}
+      {/* Tabel Ronde 8-14 (read-only, salinan dari ronde 1-7) */}
       {showExtraRounds && (
         <table className="table table-bordered table-responsive">
           <thead className="table-light">
