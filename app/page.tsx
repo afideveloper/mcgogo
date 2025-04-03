@@ -12,6 +12,7 @@ type Round = {
 export default function Home() {
   const [p8Name, setP8Name] = useState("");
   const [showInstructions, setShowInstructions] = useState(false);
+  const [showExtraRounds, setShowExtraRounds] = useState(false);
   const initialRounds: Round[] = [
     { round: 1, userVs: "", p8Vs: "" },
     { round: 2, userVs: "", p8Vs: "" },
@@ -23,7 +24,7 @@ export default function Home() {
   ];
   const [rounds, setRounds] = useState<Round[]>(initialRounds);
 
-  // Ambil data dari localStorage saat load
+  // Ambil data dari localStorage saat pertama kali load
   useEffect(() => {
     const stored = localStorage.getItem("mcgogoData");
     if (stored) {
@@ -33,7 +34,7 @@ export default function Home() {
     }
   }, []);
 
-  // Simpan data ke localStorage setiap ada perubahan
+  // Simpan data ke localStorage setiap kali p8Name atau rounds berubah
   useEffect(() => {
     localStorage.setItem("mcgogoData", JSON.stringify({ p8Name, rounds }));
   }, [p8Name, rounds]);
@@ -66,7 +67,7 @@ export default function Home() {
 
     // Ronde 7: otomatis,
     // userVs diambil dari ronde 6 (kolom p8Vs),
-    // dan p8Vs diisi dengan nilai userVs di ronde 6
+    // dan p8Vs diisi dengan nilai userVs di ronde 6 (lawan user di ronde 6)
     if (newRounds[5].userVs !== "" && newRounds[5].p8Vs !== "") {
       newRounds[6].userVs = newRounds[5].p8Vs;
       newRounds[6].p8Vs = newRounds[5].userVs;
@@ -111,18 +112,18 @@ export default function Home() {
     return false;
   };
 
-  // Placeholder khusus:
-  // - Ronde 5 di kolom p8Vs: jika ronde 3 sudah terisi, placeholder = "[nilai ronde3.userVs] vs " 
-  //   jika belum, tampilkan "musuh kamu di ronde 3 vs ..."
-  // - Untuk ronde 2, 4, 6, dan 7 di kolom p8Vs: gunakan nilai p8Name jika ada, default "p8 vs"
+  // Placeholder khusus untuk field "p8Vs":
+  // - Ronde 5: jika ronde 3 sudah terisi, placeholder = "[nilai ronde3.userVs] vs ", jika belum, tampilkan "musuh kamu di ronde 3 vs ..."
+  // - Untuk ronde 2, 4, 6, dan 7: gunakan nilai p8Name jika ada (dengan akhiran " vs"), default "p8 vs"
   const getPlaceholder = (
     round: number,
     field: "userVs" | "p8Vs"
   ): string => {
     if (field === "p8Vs") {
       if (round === 5) {
-        const round3User = rounds[2]?.userVs;
-        return round3User ? `${round3User} vs ` : "musuh kamu di ronde 3 vs ...";
+        return rounds[2]?.userVs
+          ? `${rounds[2].userVs} vs `
+          : "musuh kamu di ronde 3 vs ...";
       } else {
         return p8Name ? `${p8Name} vs` : "p8 vs";
       }
@@ -160,20 +161,18 @@ export default function Home() {
             <p>
               <strong>p8</strong> adalah musuh pertama atau mantan pertama. Masukkan
               nama <strong>p8</strong> di bawah, lalu isilah input manual untuk ronde
-              2, 4, 5 (p8 vs), dan 6 (p8 vs). Prediksi akan terupdate otomatis berdasarkan aturan:
+              2, 4, 5 (p8Vs), dan 6 (p8Vs). Prediksi akan terupdate otomatis berdasarkan aturan:
             </p>
             <ul>
-              <li>Ronde 1: User vs = p8, p8 vs = "user"</li>
+              <li>Ronde 1: User vs = p8, p8Vs = "user"</li>
               <li>Ronde 3: Terprediksi dari ronde 2</li>
               <li>
-                Ronde 5: User vs = ronde 4 (p8 vs) → p8 vs diisi manual (placeholder dinamis khusus)
+                Ronde 5: User vs = ronde 4 (p8Vs) → p8Vs diisi manual (placeholder dinamis khusus)
               </li>
               <li>
-                Ronde 6: User vs = ronde 5 (p8 vs) → p8 vs diisi manual (misal: p6)
+                Ronde 6: User vs = ronde 5 (p8Vs) → p8Vs diisi manual (misal: p6)
               </li>
-              <li>
-                Ronde 7: User vs = ronde 6 (p8 vs) dan p8 vs = lawan user di ronde 6
-              </li>
+              <li>Ronde 7: User vs = ronde 6 (p8Vs) dan p8Vs = lawan user di ronde 6</li>
             </ul>
           </div>
         )}
@@ -193,7 +192,7 @@ export default function Home() {
         />
       </div>
 
-      {/* Tabel Ronde (compact) */}
+      {/* Tabel Ronde 1-7 */}
       <table className="table table-bordered table-responsive">
         <thead className="table-light">
           <tr>
@@ -246,6 +245,59 @@ export default function Home() {
           ))}
         </tbody>
       </table>
+
+      {/* Garis pemisah */}
+      <hr />
+
+      {/* Toggle untuk menampilkan tabel ronde 8-14 */}
+      <div className="mb-3 text-center">
+        <button
+          className="btn btn-secondary"
+          onClick={() => setShowExtraRounds(!showExtraRounds)}
+        >
+          {showExtraRounds ? "Sembunyikan ronde 8-14" : "Tampilkan ronde 8-14"}
+        </button>
+      </div>
+
+      {/* Tabel Ronde 8-14 (hanya menampilkan isian saja, jiplakan data ronde 1-7 dengan nomor ronde di-offset) */}
+      {showExtraRounds && (
+        <table className="table table-bordered table-responsive">
+          <thead className="table-light">
+            <tr>
+              <th>No</th>
+              <th>User vs</th>
+              <th>{p8Name ? `${p8Name} vs` : "p8 vs"}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rounds.map((r, idx) => (
+              <tr key={r.round}>
+                <td>
+                  <strong>{idx + 8}</strong>
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={r.userVs}
+                    readOnly
+                    style={{ backgroundColor: "#e9ecef" }}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={r.p8Vs}
+                    readOnly
+                    style={{ backgroundColor: "#e9ecef" }}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {/* Footer */}
       <footer className="text-center mt-4">
